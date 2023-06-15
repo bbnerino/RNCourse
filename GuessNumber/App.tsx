@@ -1,20 +1,61 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
+import StartGameScreen from "./screens/StartGameScreen";
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useState } from "react";
+import GameScreen from "./screens/GameScreen";
+import GameOverScreen from "./screens/GameOverScreen";
 
 export default function App() {
+  const [num, setNum] = useState<number | null>(null);
+  const [gameOver, setGameOver] = useState(false);
+
+  const [screen, setScreen] = useState(
+    <StartGameScreen pickNumber={pickNumber} />
+  );
+  function pickNumber(num: number | null) {
+    setNum(num);
+    setGameOver(false);
+  }
+  useEffect(() => {
+    if (num)
+      return setScreen(
+        <GameScreen userNumber={num} gameOverHandler={gameOverHandler} />
+      );
+    setScreen(<StartGameScreen pickNumber={pickNumber} />);
+  }, [num]);
+
+  useEffect(() => {
+    if (gameOver && num) {
+      setScreen(<GameOverScreen />);
+    } else {
+      setScreen(<StartGameScreen pickNumber={pickNumber} />);
+    }
+  }, [gameOver]);
+
+  const gameOverHandler = () => {
+    setGameOver(true);
+  };
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <LinearGradient colors={["#d674a5", "#8124c8"]} style={styles.rootScreen}>
+      <ImageBackground
+        source={require("./assets/images/game.png")}
+        resizeMode="cover"
+        style={styles.rootScreen}
+        imageStyle={styles.backgroundImage}
+      >
+        <SafeAreaView>{screen}</SafeAreaView>
+      </ImageBackground>
+    </LinearGradient>
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
+  rootScreen: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  backgroundImage: {
+    opacity: 0.15,
   },
 });
+
+// expo install expo-linear-gradient
+// LinearGradient
