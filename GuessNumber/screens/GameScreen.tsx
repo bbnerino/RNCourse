@@ -3,7 +3,7 @@ import CustomButton from "../components/CustomButton";
 import Title from "../components/Title";
 import { useEffect, useState } from "react";
 import NumberContainer from "../components/NumberContainer";
-
+import { Ionicons } from "@expo/vector-icons";
 interface Props {
   gameOverHandler: () => void;
   userNumber: number;
@@ -51,6 +51,11 @@ const GameScreen = ({ userNumber, gameOverHandler }: Props) => {
   }
 
   useEffect(() => {
+    minBoundary = 1;
+    maxBoundary = 100;
+  }, []);
+
+  useEffect(() => {
     if (currentGuess === userNumber) {
       gameOverHandler();
     }
@@ -60,8 +65,12 @@ const GameScreen = ({ userNumber, gameOverHandler }: Props) => {
     <View style={styles.container}>
       <Title>GameScreen</Title>
       <NumberContainer>{currentGuess}</NumberContainer>
-      <CustomButton onPress={() => nextGuessHandler("lower")}>-</CustomButton>
-      <CustomButton onPress={() => nextGuessHandler("greater")}>+</CustomButton>
+      <CustomButton onPress={() => nextGuessHandler("lower")}>
+        <Ionicons name="md-remove" size={24} color="white" />
+      </CustomButton>
+      <CustomButton onPress={() => nextGuessHandler("greater")}>
+        <Ionicons name="md-add" size={24} color="white" />
+      </CustomButton>
     </View>
   );
 };

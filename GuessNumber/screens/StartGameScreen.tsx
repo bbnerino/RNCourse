@@ -1,4 +1,14 @@
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  KeyboardAvoidingView,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
 import CustomButton from "../components/CustomButton";
 import { useState } from "react";
 import Colors from "../constants/color";
@@ -9,7 +19,7 @@ interface Props {
 
 function StartGameScreen({ pickNumber }: Props) {
   const [value, setValue] = useState("");
-
+  const { width, height } = useWindowDimensions();
   const onsubmit = () => {
     const num = parseInt(value);
     if (isNaN(num)) {
@@ -33,33 +43,45 @@ function StartGameScreen({ pickNumber }: Props) {
     pickNumber(num);
   };
   return (
-    <View style={styles.inputContainer}>
-      <View style={styles.inputBox}>
-        <TextInput
-          value={value}
-          onChangeText={(text) => setValue(text)}
-          style={styles.input}
-          maxLength={2}
-          keyboardType="number-pad"
-          autoCorrect={false}
-        />
-      </View>
-      <View style={styles.btnbox}>
-        <View style={styles.btn}>
-          <CustomButton onPress={() => setValue("")}>Reset</CustomButton>
+    <ScrollView>
+      <KeyboardAvoidingView style={styles.screen}>
+        <View style={styles.inputContainer}>
+          <View style={styles.inputBox}>
+            <TextInput
+              value={value}
+              onChangeText={(text) => setValue(text)}
+              style={styles.input}
+              maxLength={2}
+              keyboardType="number-pad"
+              autoCorrect={false}
+            />
+          </View>
+          <View style={styles.btnbox}>
+            <View style={styles.btn}>
+              <CustomButton onPress={() => setValue("")}>Reset</CustomButton>
+            </View>
+            <View style={styles.btn}>
+              <CustomButton onPress={() => onsubmit()}>Confirm</CustomButton>
+            </View>
+          </View>
         </View>
-        <View style={styles.btn}>
-          <CustomButton onPress={() => onsubmit()}>Confirm</CustomButton>
-        </View>
-      </View>
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 export default StartGameScreen;
 
+const deviceWidth = Dimensions.get("window").width;
+const deviceHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   inputContainer: {
-    marginTop: 100,
+    marginTop: deviceHeight < 400 ? 20 : 100,
     marginHorizontal: 24,
     padding: 20,
     backgroundColor: Colors.modal,
